@@ -1,53 +1,67 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.signal import square, sawtooth
 
-#def continuous_sin():
-frecuency = 1
-amplitude = 1
-start_time = 0
-end_time = 5
-points = 5000
-t = np.linspace(start_time, end_time, points)
-x_t = amplitude * np.sin( 2 * np.pi * frecuency * t )
+# Parámetros generales
+frecuencia = 2           
+amplitud = 1
+t_ini = -1               
+t_fin = 5                
+puntos = 5000            
+t = np.linspace(t_ini, t_fin, puntos)  
 
+# Señales continuas
+x1 = amplitud * np.sin(2 * np.pi * frecuencia * t)                 
+u = np.where(t >= 0, 1, 0)                                          
+x2 = np.exp(-2 * t) * u                                             
+x3 = sawtooth(2 * np.pi * frecuencia * t, width=0.5)                
+x4 = square(2 * np.pi * frecuencia * t)                            
 
-#def discrete_sin():
-#frecuency = 1
-#amplitude = 1
-fs = 20
-ts = 1 / fs
-samples = 100
-n = np.arange(samples)
-x_n = amplitude * np.sin( 2 * np.pi * frecuency * n * ts )
+# Muestreo y señal discreta
+Ts = 0.01                        
+n = np.arange(int((t_fin - t_ini) / Ts))  
+t_n = t_ini + n * Ts             
 
-#########
-samples1 = 6
-n1 = np.arange(samples1)
-x_n1 = amplitude * np.sin( 2 * np.pi * frecuency * n1 * ts )
+# Señales muestreadas
+x1_n = amplitud * np.sin(2 * np.pi * frecuencia * t_n)
+x2_n = np.exp(-2 * t_n) * np.where(t_n >= 0, 1, 0)
+x3_n = sawtooth(2 * np.pi * frecuencia * t_n, width=0.5)
+x4_n = square(2 * np.pi * frecuencia * t_n)
 
-#GRAFICAS
-plt.figure()
+# Graficado
+plt.figure(figsize=(12, 10))
 plt.subplots_adjust(hspace=0.5)
 
-plt.subplot(3,1,1)
-plt.plot( t, x_t, 'r' )
-plt.title('Continue Function')
+# Señal Senoidal
+plt.subplot(4, 1, 1)
+plt.plot(t, x1, 'r', label='x₁(t) continua')
+plt.stem(t_n, x1_n, 'r', markerfmt='ro', linefmt='r--', basefmt=" ", label='x₁[n] discreta')
+plt.title('x₁(t) = sin(2π·f·t)')
 plt.grid()
+plt.legend()
 
-plt.subplot(3,1,2)
-plt.stem( n, x_n, 'b' )
-plt.title('Discrete Function')
+# Señal Exponencial con escalón
+plt.subplot(4, 1, 2)
+plt.plot(t, x2, 'g', label='x₂(t) continua')
+plt.stem(t_n, x2_n, 'g', markerfmt='go', linefmt='g--', basefmt=" ", label='x₂[n] discreta')
+plt.title('x₂(t) = e^(–2t)·u(t)')
 plt.grid()
+plt.legend()
 
-plt.subplot(3,1,3)
-plt.plot( t, x_t, 'g' )
-plt.stem( n1, x_n1, 'b' ) 
-plt.title('Continue & Discrete Function')
+# Señal Triangular
+plt.subplot(4, 1, 3)
+plt.plot(t, x3, 'b', label='x₃(t) continua')
+plt.stem(t_n, x3_n, 'b', markerfmt='bo', linefmt='b--', basefmt=" ", label='x₃[n] discreta')
+plt.title('x₃(t) = Señal Triangular periódica')
 plt.grid()
+plt.legend()
 
-
-#continuous_sin()
-#discrete_sin()
-
+# Señal Cuadrada
+plt.subplot(4, 1, 4)
+plt.plot(t, x4, 'm', label='x₄(t) continua')
+plt.stem(t_n, x4_n, 'm', markerfmt='mo', linefmt='m--', basefmt=" ", label='x₄[n] discreta')
+plt.title('x₄(t) = Señal Cuadrada periódica')
+plt.grid()
+plt.legend()
 
 plt.show()
