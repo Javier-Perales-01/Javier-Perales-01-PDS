@@ -13,9 +13,9 @@ def resolver_tarea_4(num_bits):
     resolucion = (paso / VFS) * 100
 
     print(f"\n Tarea 4 - DAC de {N} bits")
-    print(f"🔹 Niveles posibles: {niveles}")
-    print(f"🔹 Tamaño del paso: {paso:.6f} V")
-    print(f"🔹 Resolución porcentual: {resolucion:.4f} %")
+    print(f"Niveles posibles: {niveles}")
+    print(f"Tamaño del paso: {paso:.6f} V")
+    print(f"Resolución porcentual: {resolucion:.4f} %")
 
     # Crear vector de entrada digital y salida analógica
     entrada_digital = np.arange(niveles)
