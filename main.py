@@ -21,7 +21,7 @@ def main():
 
     elif tarea == "tarea_3":
         if len(sys.argv) < 5:
-            print("Debes proporcionar amplitud, frecuencia y fase.")
+            print("Proporcionar amplitud, frecuencia y fase.")
             return
         amplitud = sys.argv[2]
         frecuencia = sys.argv[3]
@@ -30,7 +30,7 @@ def main():
 
     elif tarea == "tarea_4":
         if len(sys.argv) < 3:
-            print("Debes proporcionar el número de bits.")
+            print("Proporcionar el número de bits.")
             return
         num_bits = sys.argv[2]
         tarea_4.resolver_tarea_4(num_bits)
