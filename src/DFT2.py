@@ -20,6 +20,18 @@ def anadir_ruido(signal, noise_freq, noise_amp=0.3, fs=256):
     noise = noise_amp * np.sin(2 * np.pi * noise_freq * n / fs)
     return signal + noise
 
+def encontrar_picos(magnitude, frequencies, threshold_ratio=0.1):
+    """Detecta picos en el espectro."""
+    max_mag = np.max(magnitude)
+    threshold = max_mag * threshold_ratio
+    peaks_x = []
+    peaks_y = []
+    for i in range(1, len(magnitude)-1):
+        if magnitude[i] > magnitude[i-1] and magnitude[i] > magnitude[i+1] and magnitude[i] > threshold:
+            peaks_x.append(frequencies[i])
+            peaks_y.append(magnitude[i])
+    return peaks_x, peaks_y
+
 def ejecutar_examen_p2():
     fs = 256.0
     duration = 6.0
@@ -27,28 +39,32 @@ def ejecutar_examen_p2():
     N = int(fs * duration)
     n = np.arange(N)
 
+    # Señal original
     signal_original = generar_senal(n, fs=fs, f1=8, f2=20)
     dft_original = dft(signal_original)
     mag_original = np.abs(dft_original)
+    freqs = np.fft.fftfreq(N, 1 / fs)
+    mitad = N // 2
 
     discrete_plotter(
         ind_var=n[:100],
         dep_var=signal_original[:100],
         title="Señal original",
-        x_label="Muestras (n)",
-        y_label="Amplitud",
+        xlabel="Muestras (n)",
+        ylabel="Amplitud",
         graph_label="Señal original"
     )
 
-    freqs = np.fft.fftfreq(N, 1 / fs)
-    mitad = N // 2
-
+    # Resaltar picos
+    peaks_x, peaks_y = encontrar_picos(mag_original[:mitad], freqs[:mitad])
     plot_magnitude_spectrum(
         frequencies=freqs[:mitad],
         magnitude=mag_original[:mitad],
-        title="DFT - Señal Original"
+        title="DFT - Señal Original",
+        highlight_points=(peaks_x, peaks_y)
     )
 
+    # Señal con ruido
     signal_noise = anadir_ruido(signal_original, noise_freq)
     dft_noise = dft(signal_noise)
     mag_noise = np.abs(dft_noise)
@@ -57,16 +73,20 @@ def ejecutar_examen_p2():
         ind_var=n[:100],
         dep_var=signal_noise[:100],
         title="Señal con Ruido",
-        x_label="Muestras (n)",
-        y_label="Amplitud",
+        xlabel="Muestras (n)",
+        ylabel="Amplitud",
         graph_label="Señal con ruido"
     )
 
+    peaks_x_noise, peaks_y_noise = encontrar_picos(mag_noise[:mitad], freqs[:mitad])
     plot_magnitude_spectrum(
         frequencies=freqs[:mitad],
         magnitude=mag_noise[:mitad],
-        title="DFT - Señal con Ruido"
+        title="DFT - Señal con Ruido",
+        highlight_points=(peaks_x_noise, peaks_y_noise)
     )
+
+    # Comparación de espectros
     plt.figure(figsize=(12, 6))
     plt.plot(freqs[:mitad], mag_original[:mitad], 'g-', linewidth=1.5, label='Señal Original')
     plt.plot(freqs[:mitad], mag_noise[:mitad], 'r-', linewidth=1.5, alpha=0.7, label='Señal con Ruido')
@@ -82,7 +102,6 @@ def ejecutar_examen_p2():
 
     delta_f = fs / N
     print(f"Resolución en frecuencia: {delta_f:.4f} Hz")
-
 
 def run():
     ejecutar_examen_p2()
