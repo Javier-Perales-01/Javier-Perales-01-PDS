@@ -1,5 +1,5 @@
 import sys
-from src import tarea_1, tarea_2, tarea_3, tarea_4
+from src import tarea_1, tarea_2, tarea_3, tarea_4, DFT, DFT2
 from src.utils import grapher
 
 def main():
@@ -34,9 +34,15 @@ def main():
             return
         num_bits = sys.argv[2]
         tarea_4.resolver_tarea_4(num_bits)
+     
+    elif tarea == "DFT":              
+        DFT.run()
+
+    elif tarea == "DFT2":              
+        DFT2.run()
 
     else:
-        print("Tarea no reconocida. Usa: tarea_1, tarea_2, tarea_3 o tarea_4")
+        print("Tarea no reconocida. Usa: tarea_1, tarea_2, tarea_3, tarea_4, DFT")
 
 if __name__ == "__main__":
     main()
